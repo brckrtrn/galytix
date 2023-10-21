@@ -3,6 +3,7 @@ import multiprocessing
 
 from gensim.models import Word2Vec
 
+
 def train_w2v(df_w2v):
     """Function printing python version."""
     cores = multiprocessing.cpu_count()
@@ -14,5 +15,8 @@ def train_w2v(df_w2v):
 
     model_w2v.build_vocab(df_w2v, progress_per=10000)
     model_w2v.train(df_w2v, total_examples=model_w2v.corpus_count, epochs=100, report_delay=1)
+    
+    word_vectors = model_w2v.wv
 
-    return model_w2v
+    word_vectors.save('models/trained.model')
+

@@ -2,6 +2,7 @@
 import pandas as pd
 import pre_process
 import training_model
+import gensim
 
 from gensim.models import KeyedVectors
 from scipy.spatial.distance import cosine
@@ -22,21 +23,24 @@ def prepare_training_model():
 
     w2v_df = pre_process.clean_process(df, "Phrases")
 
-    w2v_model = training_model.train_w2v(w2v_df)
+    training_model.train_w2v(w2v_df)
+
+    w2v_model = KeyedVectors.load('trained.model')
+
     return w2v_model
 
 
 def get_phrase_vector(phrase, model):
     """Function printing python version."""
     tokens = phrase.lower().split()
-    phrase_vector = [model[word] for word in tokens if word in model]
+    phrase_vector = [model.wv[word] for word in tokens if word in model.wv]
     if not phrase_vector:
         return None
     return sum(phrase_vector) / len(phrase_vector)
 
 def main():
     """Function printing python version."""
-    w2v_model = load_google_vm()
+    w2v_model = prepare_training_model()
 
     phrase1 = input('First word:\n')
     phrase2 = input('Second word:\n')
